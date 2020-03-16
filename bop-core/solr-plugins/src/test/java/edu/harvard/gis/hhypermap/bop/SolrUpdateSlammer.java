@@ -116,11 +116,9 @@ public class SolrUpdateSlammer {
     if (queueSize == 1 && threadCount == 1) {
       return new HttpSolrClient.Builder(solrServerUrl).build();
     }
-    return new ConcurrentUpdateSolrClient(solrServerUrl, queueSize, threadCount) {
-      @Override
-      public void handleError(Throwable ex) {
-        failedException = ex;
-      }
-    };
+    return new ConcurrentUpdateSolrClient.Builder(solrServerUrl)
+            .withQueueSize(queueSize)
+            .withThreadCount(threadCount)
+            .build();
   }
 }

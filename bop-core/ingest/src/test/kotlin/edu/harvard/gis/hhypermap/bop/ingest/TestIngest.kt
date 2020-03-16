@@ -199,7 +199,7 @@ class TestIngest {
     val solrDoc = edu.harvard.gis.hhypermap.bop.ingest.jsonToSolrInputDoc(jsonObj)
     // Replace Date with millis because the toString test we do next shouldn't be dependent on the
     //   current timezone.
-    solrDoc.get("created_at")?.let { field -> field.setValue( (field.value as Date).time, 1f) }
+    solrDoc.get("created_at")?.let { field -> field.setValue( (field.value as Date).time) }
     assertEquals("""SolrInputDocument(fields: [id=786254188132962304, created_at=1476292581004, minuteOfDayByUserTimeZone=796, coord=37.6818745,-121.7680088, text=Can you recommend anyone for this #job in ? https://t.co/LYiQrBd7i4 #Healthcare #Hiring #CareerArc, user_name=tmj_sjc_health, lang=en, sentiment_pos=true, geoadmin_admin2_count=1, geoadmin_admin2=/244/5/184, geoadmin_admin2_0_pathdv=/244, geoadmin_admin2_1_pathdv=/244/5, geoadmin_admin2_2_pathdv=/244/5/184, geoadmin_admin2_txt=/United States/California/Alameda, geoadmin_admin2_txt_0_pathdv=/United States, geoadmin_admin2_txt_1_pathdv=/United States/California, geoadmin_admin2_txt_2_pathdv=/United States/California/Alameda, geoadmin_us_census_tract_count=1, geoadmin_us_census_tract=06001451601, geoadmin_us_ma_census_block_count=0])""",
             solrDoc.toString())
   }

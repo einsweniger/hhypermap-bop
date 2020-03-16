@@ -66,52 +66,7 @@ class IngestDwConfiguration : DwConfiguration() {
   var solrPollQueueTimeMs = 1000 // SolrJ ConcurrentUpdateSolrClient defaults to 250
 
   fun newSolrClient() : ConcurrentUpdateSolrClient {
-
-    return object : ConcurrentUpdateSolrClient(solrConnectionString, solrQueueSize, solrThreadCount) {
-      init {
-        setPollQueueTime(solrPollQueueTimeMs)
-//        setRequestWriter(RequestWriter()) // XML
-      }
-
-      //TODO CUSC ought to do this error handling by itself
-      //   https://issues.apache.org/jira/browse/SOLR-3284
-
-      val errorRef = AtomicReference<Throwable>()
-
-      override fun handleError(ex: Throwable) {
-        if (! errorRef.compareAndSet(null, ex)) {
-          // there is an existing error yet to be reported. Just log this one.
-          super.handleError(ex) // default impl logs
-        }
-      }
-
-      override fun close() {
-        try {
-          throwIfError()
-        } finally {
-          super.close()
-        }
-      }
-
-      override fun request(request: SolrRequest<*>?, collection: String?): NamedList<Any> {
-        throwIfError()
-        return super.request(request, collection)
-      }
-
-      override fun blockUntilFinished() {
-        super.blockUntilFinished()
-        throwIfError()
-      }
-
-      private fun throwIfError() {
-        val ex = errorRef.get()
-        if (ex != null) {
-          errorRef.compareAndSet(ex, null) // set to null, only if it's the same exception
-          throw ex
-        }
-      }
-
-    }
+    return ConcurrentUpdateSolrClient.Builder(solrConnectionString).withQueueSize(solrQueueSize).withThreadCount(solrThreadCount).build();
   }
 
 }
