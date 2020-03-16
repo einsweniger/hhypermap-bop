@@ -63,7 +63,7 @@ public class DateShardRoutingSearchHandler extends SearchHandler {
 
   private void addShardsParamIfWeCan(SolrQueryRequest req) {
     CoreDescriptor coreDescriptor = req.getCore().getCoreDescriptor();
-    CoreContainer coreContainer = coreDescriptor.getCoreContainer();
+    CoreContainer coreContainer = req.getCore().getCoreContainer();
     if (!coreContainer.isZooKeeperAware()) {
       return;
     }

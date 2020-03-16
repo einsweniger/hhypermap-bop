@@ -174,7 +174,7 @@ public class DateShardingURPFactory extends UpdateRequestProcessorFactory {
       }
 
       coreDescriptor = req.getCore().getCoreDescriptor();
-      zkController = coreDescriptor.getCoreContainer().getZkController();
+      zkController = req.getCore().getCoreContainer().getZkController();
       collection = coreDescriptor.getCollectionName();
     }
 
@@ -210,7 +210,7 @@ public class DateShardingURPFactory extends UpdateRequestProcessorFactory {
 
       String shard = findShardForKeyAndCreateShardsIfNeeded(key);
 
-      sdoc.setField(_ROUTE_, shard, 1.0f);
+      sdoc.setField(_ROUTE_, shard);
       // DistributedURP (technically ImplicitDocRouter) will see it and know what to do
 
       super.processAdd(cmd);
@@ -382,7 +382,7 @@ public class DateShardingURPFactory extends UpdateRequestProcessorFactory {
           }
         }
       }
-      Throwables.propagateIfPossible(throwMe);
+      Throwables.throwIfUnchecked(throwMe);
       throw new SolrException(SolrException.ErrorCode.SERVER_ERROR,
               "Error creating shard " + shardName + ": " + throwMe.toString(), throwMe);
     }
